@@ -22,18 +22,19 @@ const personSchema = new mongoose.Schema({
 const Person = mongoose.model('Person', personSchema)
 
 const person = new Person({
-    name: 'asd',
-    number: '132'
+    name,
+    number
 })
 
+if (name && number) {
 
 person.save().then(result => {
     console.log('person saved!')
     mongoose.connection.close()
 })
+}
 
 
-{/*
 if (!name && !number) {
     Person.find({}).then(result => {
         result.forEach(person => {
@@ -42,7 +43,7 @@ if (!name && !number) {
         mongoose.connection.close()
     })
 }
-*/}
+
 
 
 
