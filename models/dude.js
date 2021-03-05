@@ -1,4 +1,7 @@
 const mongoose = require('mongoose')
+var uniqueValidator = require('mongoose-unique-validator');
+
+
 
 const url = process.env.MONGODB_URI
 console.log('connecting to', url)
@@ -12,13 +15,28 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFind
     .catch((error) => {
         console.log('error connecting to MongoDB:', error.message)
     })
-    
-const personSchema = new mongoose.Schema({
-    name: String,
-    number: String,
+
+const dudeSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+        unique: true,
+        minlength: 3
+    },
+    number: {
+        type: String,
+        required: true,
+        validate: {
+            validator: (number) => /\d{8}/.test(number),
+            message: 'Please enter 8 digit phone number'
+        }
+    },
 })
 
-personSchema.set('toJSON', {
+dudeSchema.plugin(uniqueValidator);
+
+
+dudeSchema.set('toJSON', {
     transform: (document, returnedObject) => {
         returnedObject.id = returnedObject._id.toString()
         delete returnedObject._id
@@ -26,7 +44,7 @@ personSchema.set('toJSON', {
     }
 })
 
-module.exports = mongoose.model('Person', personSchema)
+module.exports = mongoose.model('Dude', dudeSchema)
 
 
 
